@@ -9,17 +9,37 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [variant, setVariant] = React.useState("");
-  const [toastMessage, setToastMessage] = React.useState("");
-  const [isShowing, setIsShowing] = React.useState(false);
+  const [toastMessage, setToastMessage] = React.useState("Try this out!");
+  const [toasts, setToasts] = React.useState([
+    {
+      message: "Something went wrong!",
+      variant: "error",
+    },
+    {
+      message: "17 photos uploaded",
+      variant: "success",
+    },
+  ]);
 
+  function handleSubmit(event) {
+    console.log("submitted");
+    event.preventDefault();
+    setToasts((toasts) => [
+      ...toasts,
+      { variant: variant, message: toastMessage },
+    ]);
+  }
   return (
     <div className={styles.wrapper}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {isShowing && <ToastShelf />}
-      <div className={styles.controlsWrapper}>
+      <ToastShelf toasts={toasts} />
+      <form
+        className={styles.controlsWrapper}
+        onSubmit={(event) => handleSubmit(event)}
+      >
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -40,7 +60,7 @@ function ToastPlayground() {
 
         <div className={styles.row}>
           <div className={styles.label}>Variant</div>
-          <form className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+          <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
             {VARIANT_OPTIONS.map((variante, index) => (
               <label key={index} htmlFor={`variant-${variante}`}>
                 <input
@@ -54,16 +74,16 @@ function ToastPlayground() {
                 {variante}
               </label>
             ))}
-          </form>
+          </div>
         </div>
 
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={() => setIsShowing(true)}> Pop Toast!</Button>
+            <Button> Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
